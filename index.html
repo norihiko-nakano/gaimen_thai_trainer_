@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>แบบฝึกหัดเปลี่ยนใบขับขี่ต่างประเทศเป็นใบขับขี่ญี่ปุ่น</title>
+<style>
+:root {
+  --bg:#f4efe4; --card:#fffaf0; --ink:#29251f; --muted:#756f65;
+  --line:#d8cdbd; --accent:#8a5b38; --soft:#eadfce;
+  --ok:#267447; --bad:#a93b35;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Thai","Segoe UI",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:18px}
+header{padding:12px 4px 8px}
+h1{font-size:1.35rem;margin:0 0 6px;line-height:1.35}
+.sub{color:var(--muted);font-size:.92rem;line-height:1.55}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px rgba(60,45,30,.05)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;border:0;border-radius:14px;padding:13px 14px;cursor:pointer;font-weight:700}
+.primary{background:var(--accent);color:white}
+.secondary{background:var(--soft);color:var(--ink)}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.danger{background:#f5dedb;color:#812b28}
+.progressOuter{height:10px;background:#e8dfd2;border-radius:999px;overflow:hidden}
+.progressInner{height:100%;width:0;background:var(--accent);transition:.25s}
+.meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.9rem;margin:8px 0 14px}
+.badge{display:inline-block;background:var(--soft);padding:5px 9px;border-radius:999px;font-size:.8rem;margin-bottom:10px}
+.q{font-size:1.24rem;line-height:1.7;font-weight:750;min-height:126px;display:flex;align-items:center}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.trueBtn{background:#e3f1e7;color:#1e663d;border:2px solid #b8d9c3}
+.falseBtn{background:#f6e4e2;color:#8a302c;border:2px solid #e5bbb7}
+.feedback{margin-top:14px;padding:14px;border-radius:14px;line-height:1.65}
+.feedback.ok{background:#e7f3ea;color:#1f6039}
+.feedback.bad{background:#f8e5e3;color:#842e29}
+.jp{margin-top:8px;padding-top:8px;border-top:1px dashed currentColor;font-size:.9rem;opacity:.82}
+.hidden{display:none!important}
+.center{text-align:center}
+.bigScore{font-size:2.8rem;font-weight:900;margin:8px}
+.pass{color:var(--ok)} .fail{color:var(--bad)}
+.small{font-size:.85rem;color:var(--muted);line-height:1.55}
+.historyRow,.wrongRow{padding:11px 0;border-bottom:1px solid var(--line)}
+.historyRow:last-child,.wrongRow:last-child{border-bottom:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted)}
+input[type=checkbox]{width:18px;height:18px}
+select{width:100%;padding:11px;border:1px solid var(--line);border-radius:12px;background:white;font:inherit}
+@media (max-width:520px){.grid,.answers{grid-template-columns:1fr} .q{font-size:1.12rem;min-height:150px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🚗 แบบฝึกหัดใบขับขี่ญี่ปุ่น 🇯🇵</h1>
+  <div class="sub">สำหรับการเปลี่ยนใบขับขี่ต่างประเทศเป็นใบขับขี่ญี่ปุ่น • ภาษาไทย • ใช้งานออฟไลน์ได้</div>
+</header>
+
+<section id="home">
+  <div class="card">
+    <h2 style="margin-top:0">เลือกโหมด</h2>
+    <div class="grid">
+      <button class="primary" onclick="startExam()">📝 จำลองสอบ 50 ข้อ</button>
+      <button class="secondary" onclick="startPractice()">🐨 ฝึก 20 ข้อ</button>
+      <button class="secondary" onclick="startWrong()">📕 ทบทวนข้อผิด</button>
+      <button class="ghost" onclick="showHistory()">📊 ประวัติผลสอบ</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="toggle">
+      <input id="jpToggleHome" type="checkbox">
+      <label for="jpToggleHome">แสดงคำอธิบายภาษาญี่ปุ่นสำหรับผู้ช่วย</label>
+    </div>
+    <p class="small">โหมดจำลองสอบ: 50 ข้อ เกณฑ์ฝึกผ่าน 45/50 (90%) และจะไม่เฉลยจนกว่าจะทำครบ<br>
+    โหมดฝึก: สุ่ม 20 ข้อ พร้อมเฉลยทันที และข้อที่ตอบผิดจะถูกบันทึกไว้ใน “ทบทวนข้อผิด”</p>
+  </div>
+  <div class="card small">
+    <b>หมายเหตุ:</b> แบบฝึกนี้เรียบเรียงใหม่จากหัวข้อในหนังสือที่ถ่ายมาและกฎจราจรพื้นฐานของญี่ปุ่น ไม่ใช่ข้อสอบจริงของตำรวจ
+  </div>
+</section>
+
+<section id="quiz" class="hidden">
+  <div class="card">
+    <div class="topbar">
+      <button class="ghost" onclick="quitQuiz()">← หน้าหลัก</button>
+      <div class="toggle"><input id="jpToggleQuiz" type="checkbox"><label for="jpToggleQuiz">日本語</label></div>
+    </div>
+    <div class="meta"><span id="modeName"></span><span id="counter"></span></div>
+    <div class="progressOuter"><div id="progress" class="progressInner"></div></div>
+  </div>
+  <div class="card">
+    <div id="badge" class="badge"></div>
+    <div id="question" class="q"></div>
+    <div class="answers">
+      <button class="trueBtn" onclick="answer(true)">○ ถูก</button>
+      <button class="falseBtn" onclick="answer(false)">× ผิด</button>
+    </div>
+    <div id="feedback" class="feedback hidden"></div>
+    <button id="nextBtn" class="primary hidden" style="width:100%;margin-top:12px" onclick="nextQuestion()">ข้อต่อไป →</button>
+  </div>
+</section>
+
+<section id="result" class="hidden">
+  <div class="card center">
+    <div>ผลการทำแบบทดสอบ</div>
+    <div id="score" class="bigScore"></div>
+    <div id="judge" style="font-size:1.2rem;font-weight:800"></div>
+    <p id="resultMsg" class="sub"></p>
+    <div class="grid">
+      <button class="primary" onclick="startExam()">ทำ 50 ข้ออีกครั้ง</button>
+      <button class="secondary" onclick="startWrong()">ทบทวนข้อผิด</button>
+    </div>
+    <button class="ghost" style="width:100%;margin-top:10px" onclick="goHome()">กลับหน้าหลัก</button>
+  </div>
+</section>
+
+<section id="history" class="hidden">
+  <div class="card">
+    <div class="topbar"><h2 style="margin:0">📊 ประวัติผลสอบ</h2><button class="ghost" onclick="goHome()">← กลับ</button></div>
+    <div id="historyList" style="margin-top:12px"></div>
+    <button class="danger" style="width:100%;margin-top:12px" onclick="clearHistory()">ล้างประวัติ</button>
+  </div>
+</section>
+
+<section id="wrong" class="hidden">
+  <div class="card">
+    <div class="topbar"><h2 style="margin:0">📕 ทบทวนข้อผิด</h2><button class="ghost" onclick="goHome()">← กลับ</button></div>
+    <div id="wrongList" style="margin-top:12px"></div>
+    <button class="danger" style="width:100%;margin-top:12px" onclick="clearWrong()">ล้างรายการข้อผิด</button>
+  </div>
+</section>
+</div>
+
+<script>
+const QUESTIONS = [{"id": 1, "cat": "พื้นฐาน", "th": "ในประเทศญี่ปุ่น รถยนต์ต้องขับชิดด้านซ้ายของถนนเป็นหลัก", "ans": true, "exp_th": "ถูกต้อง ในญี่ปุ่นรถวิ่งทางซ้าย ผู้ขับขี่ต้องใช้ด้านซ้ายของทางเดินรถตามหลักการจราจร", "ja": "日本では、自動車は原則として道路の左側を通行します。"}, {"id": 2, "cat": "สัญญาณไฟ", "th": "เมื่อสัญญาณไฟเป็นสีแดง รถต้องหยุดก่อนเส้นหยุด", "ans": true, "exp_th": "ถูกต้อง ต้องหยุดก่อนเส้นหยุด และห้ามล้ำเข้าไปในทางแยก", "ja": "赤信号では停止線の手前で停止します。"}, {"id": 3, "cat": "สัญญาณไฟ", "th": "เมื่อไฟเปลี่ยนเป็นสีเหลือง หากอยู่ใกล้เส้นหยุดมากจนหยุดอย่างปลอดภัยไม่ได้ สามารถขับต่อผ่านไปได้", "ans": true, "exp_th": "ถูกต้อง ถ้าการหยุดกะทันหันจะไม่ปลอดภัย สามารถขับต่อได้ แต่ห้ามเร่งเพื่อฝ่าไฟเหลือง", "ja": "黄色信号でも、安全に停止できない場合に限り進行できます。"}, {"id": 4, "cat": "สัญญาณไฟ", "th": "ถ้าไฟเป็นสีเขียว สามารถเข้าทางแยกได้เสมอโดยไม่ต้องตรวจดูสภาพการจราจรข้างหน้า", "ans": false, "exp_th": "ผิด แม้ไฟเขียวก็ต้องตรวจดูความปลอดภัย และไม่ควรเข้าไปค้างกลางทางแยกหากด้านหน้าติดขัด", "ja": "青信号でも、安全確認が必要です。"}, {"id": 5, "cat": "คนเดินเท้า", "th": "ที่ทางม้าลายไม่มีสัญญาณไฟ หากมีคนกำลังรอข้าม ผู้ขับขี่ต้องหยุดให้คนเดินเท้าข้ามก่อน", "ans": true, "exp_th": "ถูกต้อง คนเดินเท้าที่ทางม้าลายมีสิทธิ์ก่อน รถต้องหยุดให้ทาง", "ja": "信号のない横断歩道で横断しようとする歩行者がいる場合、車は停止して譲ります。"}, {"id": 6, "cat": "คนเดินเท้า", "th": "เมื่อเข้าใกล้ทางม้าลายและยังไม่แน่ใจว่ามีคนกำลังจะข้ามหรือไม่ ต้องลดความเร็วให้สามารถหยุดได้ทันที", "ans": true, "exp_th": "ถูกต้อง หากไม่สามารถยืนยันได้ว่าไม่มีคนข้าม ต้องลดความเร็วเพื่อให้หยุดได้ทันที", "ja": "横断歩道に人がいないことが明らかでない場合、停止できる速度まで減速します。"}, {"id": 7, "cat": "คนเดินเท้า", "th": "ถ้ามีรถคันหนึ่งหยุดอยู่ก่อนทางม้าลาย รถที่ตามมาสามารถแซงผ่านได้ทันทีถ้ามองไม่เห็นคนเดินเท้า", "ans": false, "exp_th": "ผิด ต้องระวังว่ารถคันหน้าหยุดเพื่อให้คนข้าม และต้องหยุดก่อนผ่านบริเวณนั้น", "ja": "横断歩道手前で停止車両がある場合、その側方を通過する前に一時停止が必要です。"}, {"id": 8, "cat": "แซง", "th": "ภายในระยะ 30 เมตรก่อนถึงทางม้าลายหรือทางข้ามจักรยาน ห้ามแซงรถคันอื่น", "ans": true, "exp_th": "ถูกต้อง บริเวณก่อนทางข้ามเป็นจุดอันตรายและมีข้อจำกัดเรื่องการแซง", "ja": "横断歩道・自転車横断帯の手前30m以内では追越しは禁止です。"}, {"id": 9, "cat": "ทางรถไฟ", "th": "ที่ทางข้ามรถไฟซึ่งไม่มีสัญญาณไฟควบคุม ต้องหยุด ตรวจดูความปลอดภัย และฟังเสียงก่อนข้าม", "ans": true, "exp_th": "ถูกต้อง ต้องหยุดและตรวจสอบว่าปลอดภัยก่อนผ่านทางรถไฟ", "ja": "信号機のない踏切では一時停止して安全確認します。"}, {"id": 10, "cat": "เด็ก", "th": "ใกล้โรงเรียน อนุบาล หรือสถานที่ที่เด็กอาจออกมาบนถนน ต้องลดความเร็วและระวังเด็กวิ่งออกมา", "ans": true, "exp_th": "ถูกต้อง เด็กอาจเคลื่อนไหวแบบคาดเดาไม่ได้ จึงต้องเพิ่มความระมัดระวัง", "ja": "学校・幼稚園などの付近では子どもの飛び出しに注意します。"}, {"id": 11, "cat": "รถฉุกเฉิน", "th": "เมื่อรถฉุกเฉินเข้าใกล้ขณะอยู่ใกล้ทางแยก ต้องหลีกออกจากทางแยก ชิดซ้าย และหยุดให้ทาง", "ans": true, "exp_th": "ถูกต้อง ใกล้ทางแยกต้องหลีกออกจากทางแยกก่อน แล้วชิดซ้ายและหยุด", "ja": "交差点付近では、交差点を避けて左側に寄り一時停止し、緊急自動車に道を譲ります。"}, {"id": 12, "cat": "รถฉุกเฉิน", "th": "นอกบริเวณทางแยก เมื่อรถฉุกเฉินเข้าใกล้ ต้องชิดซ้ายและเปิดทางให้รถฉุกเฉินผ่าน", "ans": true, "exp_th": "ถูกต้อง นอกทางแยกให้ชิดซ้ายและไม่กีดขวางทางรถฉุกเฉิน", "ja": "交差点付近以外では左側に寄って緊急自動車に進路を譲ります。"}, {"id": 13, "cat": "เข็มขัดนิรภัย", "th": "ผู้โดยสารเบาะหลังไม่จำเป็นต้องคาดเข็มขัดนิรภัย", "ans": false, "exp_th": "ผิด ผู้โดยสารเบาะหลังมีหน้าที่ต้องคาดเข็มขัดนิรภัยเช่นกัน", "ja": "後部座席でもシートベルト着用義務があります。"}, {"id": 14, "cat": "เด็ก", "th": "โดยหลักแล้ว เด็กอายุต่ำกว่า 6 ปีต้องใช้ที่นั่งนิรภัยสำหรับเด็กเมื่อโดยสารรถยนต์", "ans": true, "exp_th": "ถูกต้อง มีข้อยกเว้นบางกรณี แต่หลักทั่วไปคือเด็กอายุต่ำกว่า 6 ปีต้องใช้ child seat", "ja": "6歳未満の幼児には、原則としてチャイルドシートを使用します。"}, {"id": 15, "cat": "โทรศัพท์", "th": "ขณะขับรถ สามารถถือโทรศัพท์มือถือแล้วอ่านข้อความสั้น ๆ ได้ถ้ารถวิ่งช้า", "ans": false, "exp_th": "ผิด การถือโทรศัพท์หรือจ้องหน้าจอขณะขับรถเป็นอันตรายและผิดกฎ", "ja": "走行中に携帯電話を手に持って使用することは禁止されています。"}, {"id": 16, "cat": "แอลกอฮอล์", "th": "หากดื่มแอลกอฮอล์เพียงเล็กน้อยและยังรู้สึกปกติ ก็สามารถขับรถได้", "ans": false, "exp_th": "ผิด ห้ามขับรถหลังดื่มแอลกอฮอล์ การประเมินตนเองว่า “ยังไหว” ไม่ใช่เหตุผลที่ขับได้", "ja": "少量でも飲酒後の運転はしてはいけません。"}, {"id": 17, "cat": "ความเหนื่อยล้า", "th": "ถ้าง่วงมากระหว่างขับรถ สามารถดื่มกาแฟแล้วฝืนขับต่อได้โดยไม่ต้องพัก", "ans": false, "exp_th": "ผิด หากง่วงหรือเหนื่อยควรหยุดในที่ปลอดภัยและพัก การฝืนขับเพิ่มความเสี่ยงอย่างมาก", "ja": "眠気が強いときは無理に運転せず、安全な場所で休憩します。"}, {"id": 18, "cat": "กลางคืน", "th": "ตอนกลางคืนควรใช้ไฟสูงตลอดเวลา แม้มีรถสวนทางหรือรถอยู่ข้างหน้า", "ans": false, "exp_th": "ผิด ต้องเปลี่ยนเป็นไฟต่ำเมื่ออาจทำให้ผู้ขับขี่คนอื่นแสบตา", "ja": "対向車や先行車がいる場合は、必要に応じてロービームに切り替えます。"}, {"id": 19, "cat": "หมอก", "th": "เมื่อมีหมอกจัด ควรลดความเร็วและใช้เส้นขอบถนน ไฟท้ายรถคันหน้า หรือสิ่งอ้างอิงอื่นเพื่อช่วยรักษาตำแหน่งรถอย่างระมัดระวัง", "ans": true, "exp_th": "ถูกต้อง ทัศนวิสัยลดลงมากในหมอก จึงต้องลดความเร็วและเพิ่มระยะห่าง", "ja": "霧のときは速度を落とし、道路標示や前車の尾灯などを目安に慎重に走行します。"}, {"id": 20, "cat": "ฝน", "th": "ถนนเปียกทำให้ระยะเบรกยาวขึ้น จึงควรเพิ่มระยะห่างจากรถคันหน้า", "ans": true, "exp_th": "ถูกต้อง แรงเสียดทานลดลง ทำให้หยุดรถได้ยากขึ้น", "ja": "雨天時は制動距離が長くなるため、車間距離を長めに取ります。"}, {"id": 21, "cat": "น้ำแข็ง", "th": "บนถนนที่มีน้ำแข็ง วิธีที่ปลอดภัยคือเหยียบเบรกแรงและหมุนพวงมาลัยเร็วเพื่อให้รถหยุดทันที", "ans": false, "exp_th": "ผิด ต้องหลีกเลี่ยงการเบรกหรือบังคับพวงมาลัยอย่างกะทันหัน เพราะรถอาจลื่นเสียการควบคุม", "ja": "凍結路では急ブレーキ・急ハンドルを避けます。"}, {"id": 22, "cat": "ทางลาด", "th": "ขณะลงทางลาดยาว ควรใช้เอนจินเบรกร่วมกับเบรกเท้า แทนการเหยียบเบรกเท้าตลอดเวลา", "ans": true, "exp_th": "ถูกต้อง การใช้เอนจินเบรกช่วยลดภาระของเบรกและป้องกันเบรกเสื่อมจากความร้อน", "ja": "長い下り坂ではエンジンブレーキを活用します。"}, {"id": 23, "cat": "ยางรถ", "th": "ถ้ายางระเบิดขณะวิ่ง ควรจับพวงมาลัยให้มั่น ลดคันเร่ง และค่อย ๆ ลดความเร็วโดยหลีกเลี่ยงการเบรกกะทันหัน", "ans": true, "exp_th": "ถูกต้อง เป้าหมายคือรักษาทิศทางและลดความเร็วอย่างนุ่มนวล", "ja": "走行中にタイヤがパンクしたら、ハンドルをしっかり握り、急ブレーキを避けて徐々に減速します。"}, {"id": 24, "cat": "ระยะหยุด", "th": "ถ้าความเร็วเพิ่มเป็น 2 เท่า ระยะหยุดของรถจะเพิ่มเป็น 2 เท่าเสมอ", "ans": false, "exp_th": "ผิด ระยะเบรกเพิ่มขึ้นมากกว่าสัดส่วนตรงกับความเร็ว จึงไม่ใช่เพียง 2 เท่าเสมอ", "ja": "速度が2倍になっても、停止距離が単純に2倍になるわけではありません。"}, {"id": 25, "cat": "ระยะห่าง", "th": "ยิ่งขับเร็วหรือถนนลื่น ยิ่งควรเพิ่มระยะห่างจากรถคันหน้า", "ans": true, "exp_th": "ถูกต้อง ต้องเผื่อเวลารับรู้ ตอบสนอง และระยะเบรกที่ยาวขึ้น", "ja": "速度が高い場合や路面が滑りやすい場合は、車間距離を長く取ります。"}, {"id": 26, "cat": "ทางด่วน", "th": "บนทางด่วน สามารถใช้ไหล่ทางเพื่อแซงรถที่วิ่งช้าได้ถ้าด้านหน้าว่าง", "ans": false, "exp_th": "ผิด ไหล่ทางมีไว้สำหรับเหตุฉุกเฉินและการใช้งานที่กำหนด ไม่ใช่ช่องทางสำหรับแซง", "ja": "高速道路の路肩を使って追い越してはいけません。"}, {"id": 27, "cat": "ทางด่วน", "th": "ถ้าขับเลยทางออกบนทางด่วน สามารถถอยหลังบนไหล่ทางเพื่อกลับไปยังทางออกได้", "ans": false, "exp_th": "ผิด ห้ามถอยหลังหรือย้อนกลับบนทางด่วน ให้ไปยังทางออกถัดไป", "ja": "高速道路で出口を通り過ぎても、後退して戻ってはいけません。"}, {"id": 28, "cat": "ทางด่วน", "th": "หากรถเสียบนทางด่วน ควรเคลื่อนรถไปยังที่ปลอดภัย เปิดไฟฉุกเฉิน ตั้งอุปกรณ์เตือน และออกไปอยู่ในที่ปลอดภัยถ้าทำได้", "ans": true, "exp_th": "ถูกต้อง ต้องป้องกันอุบัติเหตุซ้ำและหลีกออกจากพื้นที่เสี่ยง", "ja": "高速道路で故障した場合は、路肩等に寄せ、ハザード・停止表示器材などで後続車に知らせ、安全な場所へ避難します。"}, {"id": 29, "cat": "จอดรถ", "th": "สามารถจอดรถภายในระยะ 5 เมตรจากทางแยกได้ ถ้าเปิดไฟฉุกเฉิน", "ans": false, "exp_th": "ผิด บริเวณใกล้ทางแยกเป็นเขตห้ามจอดหรือหยุดตามระยะที่กฎหมายกำหนด การเปิดไฟฉุกเฉินไม่ทำให้จอดได้", "ja": "交差点の側端から5m以内は駐停車禁止です。"}, {"id": 30, "cat": "จอดรถ", "th": "บริเวณป้ายรถประจำทาง ในช่วงเวลาที่รถประจำทางให้บริการ ห้ามจอดหรือหยุดภายในระยะ 10 เมตรจากป้าย เว้นแต่เป็นรถประจำทางที่กำลังรับส่งผู้โดยสาร", "ans": true, "exp_th": "ถูกต้อง ต้องเว้นพื้นที่ให้รถประจำทางเข้าออกป้ายได้อย่างปลอดภัย", "ja": "運行時間中のバス停標示板から10m以内は、路線バス等を除き駐停車禁止です。"}, {"id": 31, "cat": "จอดรถ", "th": "สามารถจอดรถกีดขวางทางเข้าออกของโรงรถได้ ถ้าจอดไม่เกิน 5 นาที", "ans": false, "exp_th": "ผิด จุดเข้าออกสำหรับรถมีข้อห้ามเรื่องการจอดตามระยะที่กำหนด แม้จะเป็นเวลาสั้น ๆ ก็ต้องระวัง", "ja": "車庫など自動車用の出入口付近では、短時間でも駐車してはいけません。"}, {"id": 32, "cat": "จอดรถ", "th": "โดยทั่วไปไม่ควรจอดรถบนทางเท้า เว้นแต่มีเครื่องหมายหรือการจัดพื้นที่อนุญาตไว้อย่างชัดเจน", "ans": true, "exp_th": "ถูกต้อง ทางเท้าเป็นพื้นที่สำหรับคนเดินเท้า การจอดต้องเป็นไปตามเครื่องหมายและวิธีที่กำหนด", "ja": "歩道上への駐車は、標示等で認められた場合を除きできません。"}, {"id": 33, "cat": "จอดรถ", "th": "การเปิดไฟฉุกเฉินทำให้สามารถจอดในบริเวณห้ามจอดได้เสมอ", "ans": false, "exp_th": "ผิด ไฟฉุกเฉินไม่ได้ยกเลิกข้อห้ามจอดหรือหยุด", "ja": "ハザードランプを点けても、駐停車禁止場所に自由に止められるわけではありません。"}, {"id": 34, "cat": "เลี้ยวซ้าย", "th": "เมื่อเลี้ยวซ้าย ควรชิดด้านซ้ายของถนนล่วงหน้าและเลี้ยวด้วยความเร็วต่ำ", "ans": true, "exp_th": "ถูกต้อง ช่วยป้องกันการตัดหน้าจักรยานหรือรถจักรยานยนต์ด้านซ้าย", "ja": "左折時はあらかじめ道路の左側端に寄り、徐行して曲がります。"}, {"id": 35, "cat": "เลี้ยวขวา", "th": "เมื่อเลี้ยวขวาที่ทางแยกทั่วไป ควรเข้าใกล้กึ่งกลางถนนล่วงหน้าและขับช้าใกล้กึ่งกลางทางแยก", "ans": true, "exp_th": "ถูกต้อง นี่เป็นหลักการทั่วไปของการเลี้ยวขวาสำหรับรถยนต์บนถนนสองทิศทาง", "ja": "右折時はあらかじめ道路の中央に寄り、交差点の中心のすぐ内側を徐行します。"}, {"id": 36, "cat": "สัญญาณเลี้ยว", "th": "เมื่อเปลี่ยนช่องทาง ควรเปิดไฟเลี้ยวประมาณ 3 วินาทีก่อนเริ่มเปลี่ยนช่องทาง", "ans": true, "exp_th": "ถูกต้อง ต้องให้สัญญาณล่วงหน้าเพื่อให้รถรอบข้างมีเวลารับรู้", "ja": "進路変更の合図は、進路を変える約3秒前に行います。"}, {"id": 37, "cat": "สัญญาณเลี้ยว", "th": "เมื่อเลี้ยวซ้ายหรือขวา ควรเริ่มให้สัญญาณเมื่อถึงระยะประมาณ 30 เมตรก่อนจุดที่จะเลี้ยว", "ans": true, "exp_th": "ถูกต้อง การให้สัญญาณล่วงหน้าช่วยให้ผู้ใช้ถนนคนอื่นคาดการณ์การเคลื่อนที่ของรถได้", "ja": "右左折の合図は、交差点等の約30m手前から行います。"}, {"id": 38, "cat": "แตร", "th": "สามารถบีบแตรเพื่อเร่งรถคันหน้าได้ทุกครั้งที่รู้สึกว่ารถคันหน้าช้าเกินไป", "ans": false, "exp_th": "ผิด ใช้แตรเฉพาะเมื่อกฎหมายหรือป้ายกำหนด หรือเมื่อจำเป็นเพื่อหลีกเลี่ยงอันตราย", "ja": "警音器は、標識で指定された場合や危険防止のためやむを得ない場合などに使用します。"}, {"id": 39, "cat": "แซง", "th": "เมื่อรถคันอื่นกำลังแซงเรา ไม่ควรเร่งความเร็วเพื่อขัดขวางการแซง", "ans": true, "exp_th": "ถูกต้อง การเพิ่มความเร็วขณะถูกแซงทำให้เกิดอันตรายมากขึ้น", "ja": "他車に追い越されるときは、速度を上げて妨害してはいけません。"}, {"id": 40, "cat": "รถประจำทาง", "th": "เมื่อรถประจำทางกำลังออกจากป้าย ผู้ขับรถคันหลังควรช่วยให้รถประจำทางออกได้ หากสามารถทำได้โดยไม่ต้องเบรกหรือหลบอย่างอันตราย", "ans": true, "exp_th": "ถูกต้อง ต้องพยายามไม่กีดขวางการออกจากป้ายของรถประจำทางตามเงื่อนไขด้านความปลอดภัย", "ja": "発進しようとする路線バス等の進行を、急ブレーキ等を要する場合を除き妨げてはいけません。"}, {"id": 41, "cat": "คนเดินเท้า", "th": "เมื่อต้องผ่านใกล้คนเดินเท้าและไม่สามารถเว้นระยะห่างที่ปลอดภัยได้ ต้องขับช้าลง", "ans": true, "exp_th": "ถูกต้อง ต้องเว้นระยะปลอดภัยหรือใช้ความเร็วต่ำเพื่อป้องกันอันตราย", "ja": "歩行者のそばを通るとき、安全な間隔を保てない場合は徐行します。"}, {"id": 42, "cat": "ฝน", "th": "ถ้าถนนมีน้ำขัง ผู้ขับขี่ไม่ต้องรับผิดชอบหากน้ำหรือโคลนกระเด็นใส่คนเดินเท้า เพราะเป็นเรื่องหลีกเลี่ยงไม่ได้", "ans": false, "exp_th": "ผิด ผู้ขับขี่ต้องลดความเร็วและใช้ความระมัดระวังเพื่อไม่ให้น้ำหรือโคลนกระเด็นใส่ผู้อื่น", "ja": "ぬかるみや水たまりでは、泥や水を歩行者にかけないよう徐行などの措置が必要です。"}, {"id": 43, "cat": "สัมภาระ", "th": "สัมภาระที่บรรทุกบนรถต้องจัดวางและยึดให้มั่นคง เพื่อไม่ให้ตกหล่นหรือกระเด็นออกจากรถ", "ans": true, "exp_th": "ถูกต้อง ผู้ขับขี่ต้องป้องกันการตกหล่นของสิ่งของจากรถ", "ja": "荷物は転落・飛散しないよう確実に積載します。"}, {"id": 44, "cat": "สัมภาระ", "th": "โดยทั่วไป สามารถให้คนนั่งในพื้นที่บรรทุกสินค้าแทนเบาะนั่งได้ หากขับช้า", "ans": false, "exp_th": "ผิด โดยหลักแล้วห้ามโดยสารในบริเวณที่ไม่ใช่ที่นั่งที่กำหนด", "ja": "荷台など座席でない場所に人を乗せることは、原則としてできません。"}, {"id": 45, "cat": "อุบัติเหตุ", "th": "เมื่อเกิดอุบัติเหตุ ผู้ขับขี่ต้องหยุดรถ ช่วยเหลือผู้บาดเจ็บ ป้องกันอันตรายเพิ่มเติม และแจ้งตำรวจตามที่กำหนด", "ans": true, "exp_th": "ถูกต้อง หน้าที่หลังเกิดอุบัติเหตุมีทั้งการหยุดรถ ช่วยเหลือ ป้องกันอุบัติเหตุซ้ำ และรายงาน", "ja": "交通事故を起こしたときは、停止・救護・危険防止・警察への報告が必要です。"}, {"id": 46, "cat": "อุบัติเหตุ", "th": "ถ้าอุบัติเหตุมีเพียงความเสียหายเล็กน้อยและไม่มีผู้บาดเจ็บ ก็ไม่จำเป็นต้องแจ้งตำรวจ", "ans": false, "exp_th": "ผิด แม้เป็นอุบัติเหตุทรัพย์สินและความเสียหายเล็กน้อย ก็ต้องปฏิบัติตามหน้าที่ในการรายงาน", "ja": "軽微な物損事故でも警察への報告が必要です。"}, {"id": 47, "cat": "อุบัติเหตุ", "th": "บริเวณอุบัติเหตุที่มีน้ำมันเชื้อเพลิงรั่ว ห้ามสูบบุหรี่หรือใช้เปลวไฟใกล้บริเวณนั้น", "ans": true, "exp_th": "ถูกต้อง มีความเสี่ยงต่อไฟไหม้หรือระเบิด ต้องหลีกเลี่ยงแหล่งกำเนิดไฟ", "ja": "事故現場で燃料が漏れている場合、たばこや火気は厳禁です。"}, {"id": 48, "cat": "กลางคืน", "th": "ตอนกลางคืน เมื่อสายตาชินกับความมืดแล้ว สามารถใช้ความเร็วเท่ากับตอนกลางวันได้เสมอ", "ans": false, "exp_th": "ผิด ตอนกลางคืนมองเห็นได้ไกลและชัดน้อยลง ต้องปรับความเร็วให้เหมาะสมกับทัศนวิสัย", "ja": "夜間は視認性が低下するため、昼間と同じ感覚で速度を出してはいけません。"}, {"id": 49, "cat": "ทางโค้ง", "th": "ก่อนเข้าโค้งควรลดความเร็วในช่วงทางตรงก่อนถึงโค้ง แทนที่จะรอไปเบรกแรงกลางโค้ง", "ans": true, "exp_th": "ถูกต้อง การลดความเร็วก่อนเข้าโค้งช่วยรักษาเสถียรภาพของรถ", "ja": "安全なカーブ走行では、カーブ手前の直線部分で十分に減速します。"}, {"id": 50, "cat": "ความปลอดภัย", "th": "กฎจราจรมีผลกับผู้ขับรถเท่านั้น คนเดินเท้าและผู้ขี่จักรยานไม่ต้องปฏิบัติตามกฎจราจร", "ans": false, "exp_th": "ผิด กฎจราจรเป็นกติกาที่ผู้ใช้ถนนทุกประเภทต้องปฏิบัติตามตามบทบาทของตน", "ja": "交通ルールは自動車運転者だけでなく、歩行者や自転車利用者にも適用されます。"}];
+let session = [];
+let index = 0;
+let correct = 0;
+let mode = "practice";
+let locked = false;
+let examAnswers = [];
+
+const $ = id => document.getElementById(id);
+function shuffle(a) {
+  a=[...a];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  return a;
+}
+function showOnly(id) {
+  ["home","quiz","result","history","wrong"].forEach(x => $(x).classList.toggle("hidden", x!==id));
+}
+function jpOn() { return $("jpToggleQuiz").checked || $("jpToggleHome").checked; }
+$("jpToggleHome").addEventListener("change", e => $("jpToggleQuiz").checked=e.target.checked);
+$("jpToggleQuiz").addEventListener("change", e => $("jpToggleHome").checked=e.target.checked);
+
+function startExam() {
+  mode="exam"; session=shuffle(QUESTIONS).slice(0,50); index=0; correct=0; examAnswers=[]; locked=false;
+  showOnly("quiz"); renderQuestion();
+}
+function startPractice() {
+  mode="practice"; session=shuffle(QUESTIONS).slice(0,20); index=0; correct=0; examAnswers=[]; locked=false;
+  showOnly("quiz"); renderQuestion();
+}
+function startWrong() {
+  const ids=JSON.parse(localStorage.getItem("gaimen_thai_wrong_v1")||"[]");
+  const pool=QUESTIONS.filter(q=>ids.includes(q.id));
+  if(!pool.length) {
+    showWrongPage();
+    return;
+  }
+  mode="review"; session=shuffle(pool); index=0; correct=0; examAnswers=[]; locked=false;
+  showOnly("quiz"); renderQuestion();
+}
+function renderQuestion() {
+  const q=session[index];
+  locked=false;
+  $("feedback").className="feedback hidden";
+  $("nextBtn").classList.add("hidden");
+  $("question").textContent=q.th;
+  $("badge").textContent=q.cat;
+  $("counter").textContent=`ข้อ ${index+1} / ${session.length}`;
+  $("modeName").textContent= mode==="exam" ? "📝 จำลองสอบ" : mode==="review" ? "📕 ทบทวนข้อผิด" : "🐨 ฝึก";
+  $("progress").style.width=`${(index/session.length)*100}%`;
+}
+function answer(val) {
+  if(locked) return;
+  locked=true;
+  const q=session[index];
+  const ok=val===q.ans;
+  if(ok) correct++;
+  examAnswers.push({id:q.id, given:val, ok});
+  if(!ok) addWrong(q.id); else if(mode==="review") removeWrong(q.id);
+
+  if(mode==="exam") {
+    setTimeout(nextQuestion, 110);
+    return;
+  }
+  const fb=$("feedback");
+  fb.className="feedback "+(ok?"ok":"bad");
+  fb.innerHTML=`<b>${ok?"✅ ถูกต้อง":"❌ ยังไม่ถูก"}</b><br>${q.exp_th}` +
+    (jpOn()?`<div class="jp">🇯🇵 ${q.ja}</div>`:"");
+  $("nextBtn").classList.remove("hidden");
+}
+function nextQuestion() {
+  index++;
+  if(index>=session.length) finish();
+  else renderQuestion();
+}
+function finish() {
+  $("progress").style.width="100%";
+  const total=session.length;
+  const pct=Math.round(correct/total*100);
+  $("score").textContent=`${correct} / ${total}`;
+  const pass = mode==="exam" ? correct>=45 : pct>=90;
+  $("score").className="bigScore "+(pass?"pass":"fail");
+  $("judge").textContent=pass?"🎉 ผ่านเกณฑ์ฝึก":"📚 ยังต้องทบทวน";
+  $("judge").className=pass?"pass":"fail";
+  $("resultMsg").textContent= mode==="exam"
+    ? `คะแนน ${pct}% • เป้าหมาย 90% ขึ้นไป`
+    : `คะแนน ${pct}%`;
+  saveHistory(correct,total,mode);
+  showOnly("result");
+}
+function addWrong(id) {
+  let a=JSON.parse(localStorage.getItem("gaimen_thai_wrong_v1")||"[]");
+  if(!a.includes(id)) a.push(id);
+  localStorage.setItem("gaimen_thai_wrong_v1",JSON.stringify(a));
+}
+function removeWrong(id) {
+  let a=JSON.parse(localStorage.getItem("gaimen_thai_wrong_v1")||"[]");
+  a=a.filter(x=>x!==id);
+  localStorage.setItem("gaimen_thai_wrong_v1",JSON.stringify(a));
+}
+function saveHistory(c,t,m) {
+  let h=JSON.parse(localStorage.getItem("gaimen_thai_history_v1")||"[]");
+  h.unshift({date:new Date().toLocaleString("th-TH"),correct:c,total:t,mode:m});
+  h=h.slice(0,30);
+  localStorage.setItem("gaimen_thai_history_v1",JSON.stringify(h));
+}
+function showHistory() {
+  const h=JSON.parse(localStorage.getItem("gaimen_thai_history_v1")||"[]");
+  $("historyList").innerHTML=h.length?h.map(x=>`<div class="historyRow"><b>${x.correct}/${x.total}</b> (${
+    Math.round(x.correct/x.total*100)}%) • ${x.mode==="exam"?"จำลองสอบ":x.mode==="review"?"ทบทวน":"ฝึก"}<br><span class="small">${x.date}</span></div>`).join("")
+    :'<div class="small">ยังไม่มีประวัติ</div>';
+  showOnly("history");
+}
+function showWrongPage() {
+  const ids=JSON.parse(localStorage.getItem("gaimen_thai_wrong_v1")||"[]");
+  const qs=QUESTIONS.filter(q=>ids.includes(q.id));
+  $("wrongList").innerHTML=qs.length?qs.map(q=>`<div class="wrongRow"><b>ข้อ ${q.id} • ${q.cat}</b><br>${q.th}<br><span class="small">${q.exp_th}</span></div>`).join("")
+    :'<div class="small">ยังไม่มีข้อที่บันทึกไว้ 🎉</div>';
+  showOnly("wrong");
+}
+function clearHistory() {
+  if(confirm("ล้างประวัติทั้งหมดหรือไม่?")){localStorage.removeItem("gaimen_thai_history_v1");showHistory();}
+}
+function clearWrong() {
+  if(confirm("ล้างรายการข้อผิดทั้งหมดหรือไม่?")){localStorage.removeItem("gaimen_thai_wrong_v1");showWrongPage();}
+}
+function quitQuiz() { if(confirm("ออกจากแบบทดสอบนี้หรือไม่?")) goHome(); }
+function goHome() { showOnly("home"); }
+</script>
+</body>
+</html>
